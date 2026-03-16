@@ -306,12 +306,24 @@ async function main() {
     })
   ]);
 
+  const bomMetadata: Record<string, { targetPrice: number; fillSizeOz: number; labelDescription: string }> = {
+    Product_A: { targetPrice: 48.0, fillSizeOz: 1.0, labelDescription: "Retinol Renewal Serum" },
+    Product_B: { targetPrice: 36.0, fillSizeOz: 1.0, labelDescription: "Aloe Chamomile Soothing Serum" },
+    Product_C: { targetPrice: 42.0, fillSizeOz: 1.0, labelDescription: "Hyaluronic Brightening Serum" },
+    Product_D: { targetPrice: 32.0, fillSizeOz: 2.0, labelDescription: "Shea Botanical Body Balm" },
+    Product_E: { targetPrice: 28.0, fillSizeOz: 1.0, labelDescription: "Aloe Lavender Hydrating Mist" }
+  };
+
   await Promise.all(
     SYNTHETIC_PRODUCTS.map((product) =>
       prisma.bOM.create({
         data: {
           finishedGoodItemId: itemByName[product.name].id,
           batchSize: decimal(1),
+          yieldPercent: decimal(100),
+          targetPrice: bomMetadata[product.name] ? decimal(bomMetadata[product.name].targetPrice) : null,
+          fillSizeOz: bomMetadata[product.name] ? decimal(bomMetadata[product.name].fillSizeOz) : null,
+          labelDescription: bomMetadata[product.name]?.labelDescription ?? null,
           lines: {
             create: product.lines.map((line) => ({
               componentItemId: itemByName[line.componentItemName].id,

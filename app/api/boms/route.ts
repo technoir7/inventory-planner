@@ -35,6 +35,10 @@ export async function POST(request: Request) {
     data: {
       finishedGoodItemId: body.finishedGoodItemId,
       batchSize: decimal(body.batchSize ?? 1),
+      yieldPercent: decimal(body.yieldPercent ?? 100),
+      targetPrice: body.targetPrice != null ? decimal(body.targetPrice) : null,
+      fillSizeOz: body.fillSizeOz != null ? decimal(body.fillSizeOz) : null,
+      labelDescription: body.labelDescription ?? null,
       lines: {
         create: (body.lines ?? []).map((line: { componentItemId: string; quantityRequired: number }) => ({
           componentItemId: line.componentItemId,

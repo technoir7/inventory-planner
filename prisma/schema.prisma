@@ -88,6 +88,10 @@ model BOM {
   id                 String    @id @default(cuid())
   finishedGoodItemId String    @unique
   batchSize          Decimal   @db.Decimal(12, 3)
+  yieldPercent       Decimal   @default(100) @db.Decimal(5, 2)
+  targetPrice        Decimal?  @db.Decimal(12, 4)
+  fillSizeOz         Decimal?  @db.Decimal(8, 3)
+  labelDescription   String?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   finishedGoodItem   Item      @relation(fields: [finishedGoodItemId], references: [id], onDelete: Cascade)

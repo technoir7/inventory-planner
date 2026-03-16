@@ -1,7 +1,8 @@
 export function formatNumber(value: number, maximumFractionDigits = 2) {
+  const min = value % 1 === 0 ? 0 : Math.min(2, maximumFractionDigits);
   return new Intl.NumberFormat("en-US", {
     maximumFractionDigits,
-    minimumFractionDigits: value % 1 === 0 ? 0 : 2
+    minimumFractionDigits: min
   }).format(value);
 }
 
