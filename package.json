@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "setup": "bash scripts/setup.sh",
+    "bootstrap": "bash scripts/bootstrap.sh",
     "build": "next build",
     "start": "next start",
     "test": "vitest run",

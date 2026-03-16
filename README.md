@@ -109,6 +109,16 @@ Synthetic product scenarios:
 
 ## Local Setup
 
+Preferred flow:
+
+```bash
+npm run bootstrap
+```
+
+That command installs dependencies, creates `.env` from `.env.example` only when needed, runs Prisma setup, seeds the database, and then starts the dev server.
+
+Manual flow:
+
 1. Install dependencies:
 
 ```bash
@@ -138,6 +148,12 @@ npm run seed
 
 ```bash
 npm run dev
+```
+
+You can also run the setup portion without starting the app:
+
+```bash
+npm run setup
 ```
 
 ## Testing
