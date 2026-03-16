@@ -115,7 +115,7 @@ Preferred flow:
 npm run bootstrap
 ```
 
-That command installs dependencies, creates `.env` from `.env.example` only when needed, runs Prisma setup, seeds the database, and then starts the dev server.
+That command installs dependencies, creates `.env` from `.env.example` only when needed, runs Prisma setup, seeds the database, and then starts the dev server. If local Postgres credentials are missing or wrong, the bootstrap flow stays the same and `scripts/setup.sh` now exits with a clearer explanation.
 
 Manual flow:
 
@@ -125,26 +125,44 @@ Manual flow:
 npm install
 ```
 
-2. Configure the database:
+2. Configure the database connection:
 
 ```bash
 cp .env.example .env
 ```
 
-3. Generate Prisma client and push the schema:
+Set `DATABASE_URL` in `.env` so it matches your local Postgres role, password, and database name. Example:
+
+```bash
+DATABASE_URL="postgresql://<username>:<password>@localhost:5432/inventory_planner?schema=public"
+```
+
+3. Create the local database:
+
+```bash
+createdb inventory_planner
+```
+
+If you prefer `psql`, this is equivalent:
+
+```bash
+psql -U postgres -c 'CREATE DATABASE inventory_planner;'
+```
+
+4. Generate Prisma client and push the schema:
 
 ```bash
 npm run prisma:generate
 npm run prisma:push
 ```
 
-4. Seed example data:
+5. Seed example data:
 
 ```bash
 npm run seed
 ```
 
-5. Start the app:
+6. Start the app:
 
 ```bash
 npm run dev
@@ -154,6 +172,51 @@ You can also run the setup portion without starting the app:
 
 ```bash
 npm run setup
+```
+
+## Setup Troubleshooting
+
+If `npm run setup` or `npm run bootstrap` fails while Prisma is connecting to Postgres:
+
+- Set `DATABASE_URL` in `.env` or export it in your shell so it matches your local Postgres credentials:
+
+```bash
+cp .env.example .env
+DATABASE_URL="postgresql://<username>:<password>@localhost:5432/inventory_planner?schema=public"
+```
+
+- If you want to export it in your shell for the current session instead of storing it in `.env`, use:
+
+```bash
+export DATABASE_URL="postgresql://<username>:<password>@localhost:5432/inventory_planner?schema=public"
+```
+
+- Create the database before rerunning setup:
+
+```bash
+createdb inventory_planner
+```
+
+- If `createdb` is not available or you want to be explicit about the Postgres role, use `psql`:
+
+```bash
+psql -U postgres -c 'CREATE DATABASE inventory_planner;'
+```
+
+- Expected `npm run bootstrap` failure modes:
+- The script stops after the `prisma push` step and prints `Database setup failed. Check DATABASE_URL, ensure PostgreSQL is running, and create the database if needed.` when `DATABASE_URL` is missing, incorrect, PostgreSQL is not running, or the target database does not exist.
+- The dev server does not start unless `npm run setup` completes successfully.
+
+- Rerun setup after fixing credentials or creating the database:
+
+```bash
+npm run setup
+```
+
+- Rerun the full one-command flow when you want setup plus the dev server:
+
+```bash
+npm run bootstrap
 ```
 
 ## Testing
